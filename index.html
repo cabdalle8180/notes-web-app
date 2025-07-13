@@ -3,17 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>note web aplication</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    <title>notes-web-app</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="style.css">
-
+    <script src="main.js" defer></script>
+        
 </head>
 <body>
-    <button class="add" id="add"> <i class="fa-solid fa-plus"></i> Add</button>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/16.0.0/lib/marked.esm.js" integrity="sha512-8g3LR/VfbcPaWSuOfMjXSmB3X7JVUGX9XYPBtFZq6y6kjz3IAODuK9DxoPJnPFmpVTR2BK3qFcb7/YM/XaMyYg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="main.js"></script>
+    <div class="container">
+        <header>
+            <h1>Markdown Notes</h1>
+            <button class="add-btn" id="add">
+                <i class="fas fa-plus"></i> Add Note
+            </button>
+        </header>
+        
+        <div class="notes-grid" id="notes-container">
+            <!-- Notes will be added here dynamically -->
+        </div>
+        
+        <div class="instructions">
+            <h2>Markdown Tips</h2>
+            <ul>
+                <li><strong>Headers:</strong> # H1, ## H2, ### H3</li>
+                <li><strong>Bold:</strong> **bold text**</li>
+                <li><strong>Italic:</strong> *italicized text*</li>
+                <li><strong>Lists:</strong> - item 1, - item 2</li>
+                <li><strong>Links:</strong> [text](https://example.com)</li>
+                <li><strong>Code:</strong> `code` or ```code block```</li>
+                <li><strong>Blockquotes:</strong> > quoted text</li>
+            </ul>
+        </div>
+        
+        <footer>
+            <p>Your notes are automatically saved to local storage</p>
+        </footer>
+    </div>
+
 </body>
 </html>

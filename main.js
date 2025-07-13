@@ -1,45 +1,110 @@
-const addbtn = document.querySelector('#add');
+document.addEventListener('DOMContentLoaded', function () {
+    const addBtn = document.getElementById('add');
+    const notesContainer = document.getElementById('notes-container');
 
-addbtn.addEventListener('click', () => addnewnote(""));
+    // Load notes from local storage
+    const notes = JSON.parse(localStorage.getItem("notes")) || [];
 
-function addnewnote(text = '') {
-    const note = document.createElement('div');
-    note.classList.add('note');
-    note.innerHTML = `
-        <div class="tools">
-            <button class="edit"><i class="fa-solid fa-pen-to-square"></i></button>
-            <button class="delete"><i class="fa-solid fa-trash"></i></button>
-        </div>
-        <div class="main ${text ? "" : "hidden"}"></div>
-        <textarea class="${text ? "hidden" : ""}"></textarea>
-    `;
+    // Add existing notes on load
+    if (notes.length > 0) {
+        notes.forEach(note => addNewNote(note));
+    } else {
+        // Show placeholder if no notes
+        notesContainer.innerHTML = `
+                    <div class="note">
+                        <div class="placeholder">
+                            <i class="fas fa-sticky-note"></i>
+                            <h3>No Notes Yet</h3>
+                            <p>Click "Add Note" to create your first note</p>
+                        </div>
+                    </div>
+                `;
+    }
 
-    const editbtn = note.querySelector('.edit');
-    const deletebtn = note.querySelector('.delete');
-    const textareab = note.querySelector('textarea');
-    const main = note.querySelector('.main');
-
-    // Initial content if any
-    textareab.value = text;
-    main.innerHTML = marked.parse(text);
-
-    // Delete button functionality
-    deletebtn.addEventListener('click', () => {
-        note.remove();
+    // Add new note button event
+    addBtn.addEventListener('click', () => {
+        // Remove placeholder if present
+        if (notes.length === 0) {
+            notesContainer.innerHTML = '';
+        }
+        addNewNote("");
     });
 
-    // Edit button functionality
-    editbtn.addEventListener('click', () => {
-        main.classList.toggle('hidden');
-        textareab.classList.toggle('hidden');
-    });
+    function addNewNote(text = '') {
+        const noteEl = document.createElement('div');
+        noteEl.classList.add('note');
 
-    // Update text live
-    textareab.addEventListener('input', (event) => {
-        const value = event.target.value;
-        main.innerHTML = marked.parse(value);
-    });
+        noteEl.innerHTML = `
+                    <div class="tools">
+                        <button class="edit"><i class="fas fa-edit"></i></button>
+                        <button class="delete"><i class="fas fa-trash"></i></button>
+                    </div>
+                    <div class="main ${text ? "" : "hidden"}"></div>
+                    <textarea class="${text ? "hidden" : ""}" placeholder="Start typing your note here...">${text}</textarea>
+                `;
 
-    document.body.appendChild(note);
-}
+        const editBtn = noteEl.querySelector('.edit');
+        const deleteBtn = noteEl.querySelector('.delete');
+        const textarea = noteEl.querySelector('textarea');
+        const main = noteEl.querySelector('.main');
 
+        // Set initial content
+        textarea.value = text;
+        main.innerHTML = marked.parse(text);
+
+        // Delete button functionality
+        deleteBtn.addEventListener('click', () => {
+            noteEl.remove();
+            updateLocalStorage();
+            // Show placeholder if no notes left
+            if (document.querySelectorAll('.note').length === 0) {
+                notesContainer.innerHTML = `
+                            <div class="note">
+                                <div class="placeholder">
+                                    <i class="fas fa-sticky-note"></i>
+                                    <h3>No Notes Yet</h3>
+                                    <p>Click "Add Note" to create a new note</p>
+                                </div>
+                            </div>
+                        `;
+            }
+        });
+
+        // Edit button functionality
+        editBtn.addEventListener('click', () => {
+            main.classList.toggle('hidden');
+            textarea.classList.toggle('hidden');
+
+            // Change icon based on state
+            const icon = editBtn.querySelector('i');
+            if (textarea.classList.contains('hidden')) {
+                icon.classList.remove('fa-save');
+                icon.classList.add('fa-edit');
+            } else {
+                icon.classList.remove('fa-edit');
+                icon.classList.add('fa-save');
+            }
+        });
+
+        // Update text live
+        textarea.addEventListener('input', (e) => {
+            const value = e.target.value;
+            main.innerHTML = marked.parse(value);
+            updateLocalStorage();
+        });
+
+        notesContainer.appendChild(noteEl);
+        updateLocalStorage();
+    }
+
+    function updateLocalStorage() {
+        const textAreas = document.querySelectorAll('textarea');
+        const notes = [];
+
+        textAreas.forEach(textarea => {
+            notes.push(textarea.value);
+        });
+
+        localStorage.setItem("notes", JSON.stringify(notes));
+    }
+});
